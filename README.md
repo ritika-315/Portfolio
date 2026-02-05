@@ -1,16 +1,93 @@
-# React + Vite
+# 🌟 Ritika Srivastava – Portfolio Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive and interactive portfolio built with **React, Vite, Tailwind CSS, Framer Motion and EmailJS** showcasing my projects and skills.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Live Demo
 
-## React Compiler
+👉 **Live Website:** portfolio-kyccu1wfp-ritika-315s-projects.vercel.app
+👉 **GitHub:** [https://github.com/ritika-315](https://github.com/ritika-315)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* 🎨 Modern UI with Glassmorphism & Gradients
+* 🌙 Dark / Light Theme (Persistent)
+* 📩 Contact Form using EmailJS
+* 📊 Scroll Progress Bar
+* ⬆️ Back to Top Button
+* ⚡ Smooth Animations with Framer Motion
+* 📱 Fully Responsive Design
+* 🔔 Toast Notifications
+* 🧩 Skill Icons using Lucide React
+
+---
+
+## 🛠 Tech Stack
+
+* **Frontend:** React + Vite
+* **Styling:** Tailwind CSS
+* **Animations:** Framer Motion
+* **Icons:** Lucide React
+* **Email Service:** EmailJS
+* **Deployment:** Vercel
+
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone[ YOUR_REPO_LINK](https://github.com/ritika-315/Portfolio)
+cd ritika-portfolio
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run locally:
+
+```bash
+npm run dev
+```
+
+Open → [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 📦 Build
+
+```bash
+npm run build
+```
+
+Output folder → **dist/**
+
+---
+
+## 📩 EmailJS Setup
+
+1. Create account on [https://emailjs.com](https://emailjs.com)
+2. Create Service & Template
+3. Add keys in code:
+
+```js
+service: "YOUR_SERVICE_ID",
+template: "YOUR_TEMPLATE_ID",
+public: "YOUR_PUBLIC_KEY"
+```
+
+---
+
+## 🌐 Deployment (Vercel)
+
+1. Push code to GitHub
+2. Import project on Vercel
+3. Build command: `npm run build`
+4. Output directory: `dist`
