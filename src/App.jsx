@@ -11,9 +11,9 @@ const USER = {
   linkedin: "https://www.linkedin.com/in/ritika-srivastava-10093525a/",
   resume: "/Ritika_Srivastava_Résumé.pdf",
   github: "https://github.com/ritika-315/",
-  service: "service_tnr45pt",
-  template: "template_z1w3xm9",
-  public: "gNFlHxokDg8xs5hD2",
+  service: import.meta.env.VITE_EMAIL_SERVICE,
+  template: import.meta.env.VITE_EMAIL_TEMPLATE,
+  public: import.meta.env.VITE_EMAIL_PUBLIC,
 };
 
 const FEATURED = [
