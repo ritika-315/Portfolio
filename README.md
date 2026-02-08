@@ -6,7 +6,7 @@ A modern, responsive and interactive portfolio built with **React, Vite, Tailwin
 
 ## 🚀 Live Demo
 
-👉 **Live Website:** [portfolio-kyccu1wfp-ritika-315s-projects.vercel.app](https://portfolio-flame-ten-r3u0s99zxp.vercel.app/)
+👉 **Live Website:** [portfolio-flame-ten-r3u0s99zxp.vercel.app](https://portfolio-flame-ten-r3u0s99zxp.vercel.app/)
 
 👉 **GitHub:** [https://github.com/ritika-315](https://github.com/ritika-315)
 
