@@ -1,437 +1,333 @@
-import { useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { Github, Linkedin, Mail, Menu, X, ExternalLink, ArrowUp, Code, Database, Brain, Globe } from "lucide-react";
-import emailjs from "@emailjs/browser";
-
-/* ================== EDIT ONLY THIS SECTION ================== */
-const USER = {
-  name: "Ritika Srivastava",
-  city: "Delhi",
-  email: "ritika.srivastava315@gmail.com",
-  linkedin: "https://www.linkedin.com/in/ritika-srivastava-10093525a/",
-  resume: "/Ritika_Srivastava_Résumé.pdf",
-  github: "https://github.com/ritika-315/",
-  service: import.meta.env.VITE_EMAIL_SERVICE,
-  template: import.meta.env.VITE_EMAIL_TEMPLATE,
-  public: import.meta.env.VITE_EMAIL_PUBLIC,
+import { useEffect, useRef, useState } from 'react';
+import { motion as Motion, useReducedMotion } from 'framer-motion';
+import { ArrowDown, ArrowUpRight, BookOpen, BriefcaseBusiness, Code2, Database, FileText, Github, GraduationCap, Layers3, Linkedin, Mail, Menu, Terminal, Users, X } from 'lucide-react';
+const PROFILE = {
+  github: 'https://github.com/ritika-315/',
+  linkedin: 'https://www.linkedin.com/in/ritika-srivastava-10093525a/',
+  email: 'ritika.srivastava315@gmail.com',
+  resume: '/Ritika_Srivastava_Resume.pdf'
 };
-
-const FEATURED = [
-  {
-    title: "Movie Recommendation System",
-    desc: "Content based engine using TF-IDF & Cosine Similarity with FastAPI and Streamlit.",
-    tech: ["Python", "NLP", "FastAPI", "Streamlit"],
-    github: "https://github.com/ritika-315/Movie_Recommendation_System",
-    live: "https://movierecommendationsystem-zn8jemcmnpbyfsqwecqohl.streamlit.app",
-    img: "/movie-recommendation.png",
-  },
-  {
-    title: "Zero Touch Sales Analytics",
-    desc: "Automated pipeline converting raw sales data into business insights.",
-    tech: ["Python", "Analytics", "Dashboard"],
-    github: "https://github.com/ritika-315/zero-touch-sales-analytics",
-    live: "https://zero-touch-sales-analytics-zaagbzvutr6jta3azzcdpk.streamlit.app",
-    img: "/zero-touch-analytics.png",
-  },
-  {
-    title: "Resume Analyzer",
-    desc: "JD vs Resume matching with NLP and skill gap visualization.",
-    tech: ["Python", "NLP", "Flask"],
-    github: "https://github.com/ritika-315/Resume-Analyzer",
-    live: " https://resume-analyzer-y2by.onrender.com",
-    img: "/resume-analyzer.png",
-  },
-  {
-    title: "Customer Sentiment Webapp",
-    desc: "Sentiment prediction dashboard using ML and Flask.",
-    tech: ["NLP", "Flask", "ML"],
-    github: "https://github.com/ritika-315/customer-sentiment-webapp",
-    // live: "",
-    img: "/customer-sentiment.png",
-  },
-];
-
-const OTHER_PROJECTS = [
-  {
-    title: "MERN Book Store",
-    desc: "Full‑stack bookstore with Firebase auth and admin panel.",
-    tech: ["React", "Node", "MongoDB"],
-    github: "https://github.com/ritika-315/book-store",
-    live: "https://book-store-eight-lac.vercel.app",
-    img: "/book-store.png",
-  },
-  {
-    title: "Weather App",
-    desc: "5‑day forecast app using OpenWeather API and Context state.",
-    tech: ["React", "API", "UI"],
-    github: "https://github.com/ritika-315/weatherapp",
-    live: "https://ritika-315.github.io/weatherapp/",
-    img: "/weather-forecast.png",
-  },
-  {
-    title: "TOMATO Food Ordering",
-    desc: "MERN platform with Stripe payments & JWT authentication.",
-    tech: ["MERN", "Stripe", "JWT"],
-    github: "https://github.com/ritika-315/food-del",
-    live: "https://food-del-frontend-og4n.onrender.com",
-    img: "food-del.png",
-  },
-  {
-    title: "PG Life",
-    desc: "PHP/MySQL PG accommodation portal with AJAX filters.",
-    tech: ["PHP", "MySQL", "AJAX"],
-    github: "https://github.com/ritika-315/PGLife",
-    // live: "",
-    img: "pg-life.png",
-  },
-  {
-    title: "Facial Expression Recognition",
-    desc: "Real‑time emotion detection using custom VGG‑style CNN and OpenCV.",
-    tech: ["Python", "CNN", "OpenCV"],
-    github: "https://github.com/ritika-315/facial-expression-recognition",
-    // live: "",
-    // img: "/screens/emotion.png",
-  },
-  {
-    title: "Customer Churn Prediction",
-    desc: "Telecom churn prediction with ~89% accuracy using XGBoost & Neural Networks.",
-    tech: ["ML", "XGBoost", "EDA"],
-    github: "https://github.com/ritika-315/Customer_Churn_Prediction",
-    // live: "",
-    // img: "/screens/churn.png",
-  },
-  {
-    title: "Titanic Survival Prediction",
-    desc: "Logistic regression model achieving ~86% accuracy with feature engineering.",
-    tech: ["Python", "ML", "EDA"],
-    github: "https://github.com/ritika-315/Titanic-Survival-Prediction",
-    // live: "",
-    // img: "/screens/titanic.png",
-  },
-];
-/* ============================================================ */
-
-const Toast = ({msg, type}) => (
-  <motion.div
-    initial={{opacity:0,y:20}}
-    animate={{opacity:1,y:0}}
-    className={`fixed bottom-6 right-6 px-4 py-2 rounded-xl shadow-lg z-50 ${
-      type==='error'?'bg-red-600':'bg-green-600'
-    }`}>{msg}</motion.div>
-);
-
-const TypeText = () => {
-  const words = [
-    "AI Developer",
-    "Web Builder",
-    "Data Explorer",
-    "Problem Solver",
-  ];
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setIndex((i) => (i + 1) % words.length), 2000);
-    return () => clearInterval(t);
-  }, []);
-  return <span className="text-purple-400">{words[index]}</span>;
-};
-
-const Fade = ({ children }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 25 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.6 }}
-  >
+const NAV = ['About', 'Skills', 'Projects', 'Experience', 'Contact'];
+const SKILLS = [{
+  title: 'Languages',
+  icon: Code2,
+  items: ['Python', 'JavaScript', 'SQL', 'C', 'C++']
+}, {
+  title: 'Frontend',
+  icon: Layers3,
+  items: ['React.js', 'HTML', 'CSS']
+}, {
+  title: 'Backend',
+  icon: Terminal,
+  items: ['Node.js', 'Express.js', 'REST APIs']
+}, {
+  title: 'Data and Databases',
+  icon: Database,
+  items: ['Pandas', 'NumPy', 'scikit-learn', 'Streamlit', 'MongoDB', 'MySQL']
+}, {
+  title: 'Developer Tools',
+  icon: Code2,
+  items: ['Git', 'GitHub', 'Postman', 'Linux', 'Google Colab']
+}, {
+  title: 'Core Fundamentals',
+  icon: BookOpen,
+  items: ['Data Structures and Algorithms', 'Object-Oriented Programming', 'DBMS', 'Operating Systems']
+}];
+const PROJECTS = [{
+  title: 'Resume Analyzer and Job Match System',
+  category: 'TEXT ANALYSIS',
+  description: 'Compares a résumé with a job description to surface relevant skills and gaps, helping candidates understand how their experience aligns with a role.',
+  tech: ['Python', 'FastAPI', 'spaCy', 'scikit-learn'],
+  repo: 'Resume-Analyzer',
+  image: '/resume-analyzer.png',
+  alt: 'Resume Analyzer interface for comparing a résumé with a job description'
+}, {
+  title: 'Sales Analytics and Forecasting Dashboard',
+  category: 'DATA & AUTOMATION',
+  description: 'Turns raw sales data into a dashboard of trends and forecasts, making business performance easier to explore and interpret.',
+  tech: ['Python', 'Pandas', 'Streamlit', 'Prophet'],
+  repo: 'zero-touch-sales-analytics',
+  image: '/zero-touch-analytics.png',
+  alt: 'Sales analytics dashboard displaying business performance insights'
+}, {
+  title: 'Movie Recommendation System',
+  category: 'RECOMMENDATION SYSTEM',
+  description: 'Helps users discover similar movies with content-based recommendations using TF-IDF and cosine similarity.',
+  tech: ['Python', 'NLP', 'FastAPI', 'Streamlit'],
+  repo: 'Movie_Recommendation_System',
+  image: '/movie-recommendation.png',
+  alt: 'Movie recommendation interface with suggested films'
+}, {
+  title: 'MERN Book Store',
+  category: 'FULL-STACK APPLICATION',
+  description: 'A full-stack bookstore with a user-facing browsing experience and an admin panel for managing the book catalog.',
+  tech: ['React', 'Node.js', 'Express.js', 'MongoDB'],
+  repo: 'book-store',
+  image: '/book-store.png',
+  alt: 'Book store interface displaying books available to browse'
+}, {
+  title: 'Customer Churn Prediction',
+  category: 'MACHINE LEARNING',
+  description: 'Explores churn across 7,043 telecom customer records. Compares classification algorithms, with the best model reaching approximately 81% accuracy, to inform retention strategies.',
+  tech: ['Python', 'Pandas', 'NumPy', 'scikit-learn'],
+  repo: 'Customer_Churn_Prediction'
+}];
+function ExternalLink({
+  href,
+  children,
+  ...props
+}) {
+  return <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
     {children}
-  </motion.div>
-);
-
-export default function Portfolio() {
-  const [dark, setDark] = useState(
-    () => localStorage.getItem("theme") !== "light",
-  );
-  useEffect(
-    () => localStorage.setItem("theme", dark ? "dark" : "light"),
-    [dark],
-  );
-  const [open, setOpen] = useState(false);
-  const [menu, setMenu] = useState(false);
-  const [toast,setToast] = useState(null);
-  const [light,setLight] = useState(null);
-  const [sending,setSending] = useState(false);
-  const { scrollY, scrollYProgress } = useScroll();
-  const y = useTransform(scrollY, [0, 400], [0, 80]);
-  const bar = useSpring(scrollYProgress,{stiffness:120,damping:20});
-
-  /* EmailJS submit */
-  const send = (e) => {
-    e.preventDefault();
-    setSending(true);
-    emailjs.sendForm(USER.service, USER.template, e.target, USER.public)
-      .then(()=>{
-        setToast({msg:'Message Sent ✓', type:'ok'});
-      })
-      .catch(()=> setToast({msg:'Failed to send',type:'error'}))
-      .finally(()=> setSending(false));
+  </a>;
+}
+function SocialLinks() {
+  return <div className="social-links">
+    <ExternalLink href={PROFILE.github} aria-label="Ritika Srivastava on GitHub">
+      <Github aria-hidden="true" size={19} />
+    </ExternalLink>
+    <ExternalLink href={PROFILE.linkedin} aria-label="Ritika Srivastava on LinkedIn">
+      <Linkedin aria-hidden="true" size={19} />
+    </ExternalLink>
+  </div>;
+}
+function SectionHeading({
+  number,
+  title,
+  subtitle
+}) {
+  return <div className="section-heading">
+    <p className="eyebrow">{number} / {title}</p>
+    <h2>
+      {subtitle}
+    </h2>
+  </div>;
+}
+function ProjectCard({
+  project,
+  index
+}) {
+  const [imageFailed, setImageFailed] = useState(false);
+  return <article className={`project-card ${project.image ? '' : 'project-wide'}`}>
+    {project.image && !imageFailed && <div className="project-image">
+      <img src={project.image} alt={project.alt} loading="lazy" decoding="async" onError={() => setImageFailed(true)} />
+    </div>}
+    <div className="project-body">
+      <div className="project-meta">
+        <span>
+          {project.category}
+        </span>
+        <span aria-hidden="true">0{index + 1}</span>
+      </div>
+      <h3>
+        {project.title}
+      </h3>
+      <p>
+        {project.description}
+      </p>
+      <ul className="tags" aria-label="Project technologies">
+        {project.tech.map(tech => <li key={tech}>
+          {tech}
+        </li>)}
+      </ul>
+      <ExternalLink className="project-link" href={`${PROFILE.github}${project.repo}`} aria-label={`View ${project.title} on GitHub`}><Github aria-hidden="true" size={16} /> View source <ArrowUpRight aria-hidden="true" size={16} /></ExternalLink>
+    </div>
+  </article>;
+}
+export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef(null);
+  const reduceMotion = useReducedMotion();
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = event => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+        menuButton.current?.focus();
+      }
+    };
+    const desktop = window.matchMedia('(min-width: 800px)');
+    const closeOnDesktop = event => {
+      if (event.matches) setMenuOpen(false);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    desktop.addEventListener('change', closeOnDesktop);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      desktop.removeEventListener('change', closeOnDesktop);
+    };
+  }, [menuOpen]);
+  const navigateFromMenu = event => {
+    setMenuOpen(false);
+    const target = document.querySelector(event.currentTarget.hash);
+    target?.focus({
+      preventScroll: true
+    });
   };
-
-  return (
-    <div className={dark ? "bg-black text-white" : "bg-gray-50 text-black"}>
-      {/* PROGRESS BAR */}
-      <motion.div style={{scaleX:bar}} className="fixed top-0 left-0 right-0 h-1 bg-purple-500 origin-left z-50"/>
-      {toast && <Toast {...toast}/>}
-      {light && <Lightbox img={light} onClose={()=>setLight(null)}/>}
-
-      {/* Parallax Gradient */}
-      <motion.div style={{ y }} className="fixed inset-0 -z-10">
-        <div className="absolute top-0 left-0 w-[700px] h-[700px] bg-purple-600/10 blur-3xl rounded-full" />
-        <div className="absolute bottom-0 right-0 w-[700px] h-[700px] bg-blue-600/10 blur-3xl rounded-full" />
-      </motion.div>
-      {/* NAVBAR */}
-      <nav className="fixed w-full z-50 backdrop-blur-xl bg-white/5 border-b border-white/10">
-        <div className="max-w-6xl mx-auto p-4 flex justify-between items-center">
-          <span className="font-semibold">{USER.name}</span>
-          <div className="hidden md:flex items-center gap-5">
-            <a href="#contact">Contact</a>
-            <a href={USER.linkedin}>
-              <Linkedin size={18} />
-            </a>
-            <a href={USER.github}>
-              <Github size={18} />
-            </a>
-            <button
-              onClick={() => setDark(!dark)}
-              className="px-3 py-1 rounded-xl bg-white/10"
-            >
-              Theme
-            </button>
-          </div>
-
-          <button className="md:hidden" onClick={() => setMenu(!menu)}>
-            {menu ? <X /> : <Menu />}
+  return <>
+    <a className="skip-link" href="#main">Skip to content</a>
+    <header className="site-header">
+      <div className="shell nav-bar">
+        <a href="#home" className="wordmark" aria-label="Ritika Srivastava, home" onClick={() => setMenuOpen(false)}>rs<span>.</span></a>
+        <nav aria-label="Main navigation" className="desktop-nav">
+          {NAV.map(item => <a key={item} href={`#${item.toLowerCase()}`}>
+            {item}
+          </a>)}
+        </nav>
+        <div className="nav-actions">
+          <SocialLinks />
+          <button ref={menuButton} className="menu-button" aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
           </button>
         </div>
-
-        {menu && (
-          <div className="md:hidden p-4 border-t border-white/10 space-y-3 bg-black/80">
-            <a className="block" href="#contact">
-              Contact
-            </a>
-            <a className="block" href={USER.linkedin}>
-              LinkedIn
-            </a>
-            <a className="block" href={USER.github}>
-              Github
-            </a>
-            <button
-              onClick={() => setDark(!dark)}
-              className="px-3 py-1 rounded-xl bg-white/10"
-            >
-              Theme
-            </button>
-          </div>
-        )}
+      </div>
+      <nav id="mobile-navigation" aria-label="Mobile navigation" className="mobile-nav" hidden={!menuOpen}>
+        {NAV.map(item => <a key={item} href={`#${item.toLowerCase()}`} onClick={navigateFromMenu}>
+          {item}
+        </a>)}
       </nav>
-
-      {/* HERO */}
-      <section className="pt-36 pb-28 text-center max-w-5xl mx-auto">
-        <motion.h1 
-          className="text-6xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 text-transparent bg-clip-text"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          Hi, I'm {USER.name}
-        </motion.h1>
-
-        <p className="mt-4 text-xl opacity-80">
-          I am a <TypeText />
-        </p>
-
-        <div className="mt-10 flex justify-center gap-5">
-          <a
-            href="#projects"
-            className="px-6 py-3 rounded-xl bg-purple-600 hover:scale-105 transition"
-          >
-            Projects
-          </a>
-          <a
-            href={USER.resume}
-            className="px-6 py-3 rounded-xl bg-green-600 hover:scale-105 transition"
-          >
-            Resume
-          </a>
+    </header>
+    <main id="main" tabIndex={-1}>
+      <section id="home" tabIndex={-1} className="hero shell">
+        <Motion.div initial={reduceMotion ? false : {
+          opacity: 0,
+          y: 12
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.45
+        }}>
+          <p className="availability"><span aria-hidden="true" /> Open to Software Engineer opportunities</p>
+          <p className="hero-name">Ritika Srivastava</p>
+          <h1>Software Engineer building <span>Python, backend, and full-stack</span> applications.</h1>
+          <p className="hero-description">Computer Science Engineering graduate from IGDTUW. I build practical data-processing applications, user-facing interfaces, and automation workflows.</p>
+          <div className="hero-actions">
+            <a className="button button-primary" href="#projects">View Projects <ArrowUpRight aria-hidden="true" size={18} /></a>
+            <ExternalLink className="button button-secondary" href={PROFILE.resume}>View Résumé <FileText aria-hidden="true" size={17} /></ExternalLink>
+            <ExternalLink className="button button-text" href={PROFILE.linkedin}>LinkedIn <ArrowUpRight aria-hidden="true" size={17} /></ExternalLink>
+          </div>
+          <div className="hero-bottom">
+            <span>PYTHON <span aria-hidden="true">/</span> BACKEND <span aria-hidden="true">/</span> FULL-STACK</span>
+            <a href="#about" aria-label="Explore the About section">
+              <ArrowDown aria-hidden="true" size={18} />
+            </a>
+          </div>
+        </Motion.div>
+      </section>
+      <section id="about" tabIndex={-1} className="section shell">
+        <SectionHeading number="01" title="About" subtitle="Practical software. Thoughtful execution." />
+        <div className="about-grid">
+          <div className="about-copy">
+            <p>I’m a B.Tech graduate in Computer Science and Engineering from IGDTUW, having graduated in June 2026. My focus is Python, backend, and full-stack development.</p>
+            <p>I’m interested in building practical, reliable, user-focused software—from processing data to creating interfaces people can use. I’m currently open to Software Engineer opportunities at product-focused companies.</p>
+          </div>
+          <aside className="education-card">
+            <GraduationCap aria-hidden="true" size={25} />
+            <p className="eyebrow">Education</p>
+            <h3>B.Tech · Computer Science and Engineering</h3>
+            <p>IGDTUW</p>
+            <span>Graduated June 2026</span>
+          </aside>
         </div>
       </section>
-
-      {/* ABOUT */}
-      <section className="p-6 max-w-4xl mx-auto">
-        <h2 className="text-3xl mb-4 font-semibold border-b border-white/10 pb-2">
-          About Me
-        </h2>
-        <motion.div
-          whileHover={{ y: -3 }}
-          className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl"
-        >
-          Builder mindset focused on creating practical AI & data applications.
-          Comfortable across Python, Web and Analytics with ability to learn
-          fast and convert ideas into working products.
-        </motion.div>
+      <section id="skills" tabIndex={-1} className="section shell">
+        <SectionHeading number="02" title="Technical Skills" subtitle="The tools behind the work." />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {SKILLS.map(({
+            title,
+            icon,
+            items
+          }) => {
+            const Icon = icon;
+            return <article className="skill-card" key={title}>
+            <Icon aria-hidden="true" size={21} />
+            <h3>
+              {title}
+            </h3>
+            <ul className="tags">
+              {items.map(item => <li key={item}>
+                {item}
+              </li>)}
+            </ul>
+          </article>;
+          })}
+        </div>
       </section>
-
-      {/* SKILLS WITH ICONS */}
-      <Fade>
-      <section className="p-6 max-w-5xl mx-auto">
-      <h2 className="text-3xl mb-4 font-semibold">Skills</h2>
-      <div className="grid md:grid-cols-4 gap-4">
-      {[
-        { name: "Python", icon: <Code size={18}/> },
-        { name: "JavaScript", icon: <Code size={18}/> },
-        { name: "Machine Learning", icon: <Brain size={18}/> },
-        { name: "NLP", icon: <Brain size={18}/> },
-        { name: "Flask", icon: <Globe size={18}/> },
-        { name: "FastAPI", icon: <Globe size={18}/> },
-        { name: "React", icon: <Globe size={18}/> },
-        { name: "SQL", icon: <Database size={18}/> }
-        ].map((s) => (
-            <motion.div
-            key={s.name}
-            whileHover={{ y: -4 }}
-            className="flex items-center gap-3 p-4 text-center rounded-xl bg-white/5 border border-white/10 hover:border-purple-400 transition"
-            >
-            <span className="text-purple-400">{s.icon}</span>
-            {s.name}
-            </motion.div>
-            ))}
+      <section id="projects" tabIndex={-1} className="section shell">
+        <SectionHeading number="03" title="Featured Projects" subtitle="From an idea to a working application." />
+        <p className="section-intro">Selected work in data processing, automation, and full-stack development.</p>
+        <div className="projects-grid">
+          {PROJECTS.map((project, index) => <ProjectCard key={project.repo} project={project} index={index} />)}
+        </div>
+      </section>
+      <section id="experience" tabIndex={-1} className="section shell">
+        <SectionHeading number="04" title="Experience" subtitle="Applying machine learning to a real problem." />
+        <article className="experience-card">
+          <div className="experience-heading">
+            <div>
+              <BriefcaseBusiness aria-hidden="true" size={24} />
+              <h3>Machine Learning Intern</h3>
+              <p>COE-AI, Anveshan Foundation</p>
             </div>
-            </section>
-            </Fade>
-
-      {/* FEATURES */}
-      <Fade>
-        <section id="projects" className="max-w-6xl mx-auto p-6">
-          <h2 className="text-3xl mb-6 font-semibold border-b border-white/10 pb-2">
-            Featured Projects
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {FEATURED.map((p, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.02 }}
-                className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400 transition"
-              >
-                <div className="mb-3 rounded-lg overflow-hidden border border-white/10">
-                  <img
-                    src={p.img}
-                    className="w-full h-44 object-cover"
-                    alt={p.title}
-                  />
-                </div>
-
-                <h3 className="text-2xl mb-2">{p.title}</h3>
-                <p className="opacity-70 mb-3">{p.desc}</p>
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {p.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="text-xs px-2 py-1 rounded-lg bg-white/10"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="space-x-4">
-                  <a href={p.github} className="text-blue-400 hover:underline">
-                    GitHub
-                  </a>
-                  <a href={p.live} className="text-green-400 hover:underline">
-                    Live
-                  </a>
-                </div>
-              </motion.div>
-            ))}
+            <span className="date">June 2023 – July 2023</span>
           </div>
-          {/* OTHERS */}
-          <div className="mt-10 text-center">
-            <button
-              onClick={() => setOpen(!open)}
-              className="px-6 py-2 rounded-xl bg-white/10"
-            >
-              View More Projects
-            </button>
+          <ul className="experience-list">
+            <li>Built an end-to-end telecom churn prediction workflow using 7,043 customer records.</li>
+            <li>Worked on preprocessing, feature engineering, model training, and evaluation.</li>
+            <li>Compared multiple classification algorithms and achieved approximately 81% accuracy with the best-performing model.</li>
+            <li>Translated model results into insights that could support targeted customer-retention strategies.</li>
+          </ul>
+        </article>
+      </section>
+      <section id="publication-leadership" tabIndex={-1} className="section shell">
+        <SectionHeading number="05" title="Publication and Leadership" subtitle="Research and community." />
+        <div className="credentials-grid">
+          <article className="credential-card">
+            <BookOpen aria-hidden="true" size={23} />
+            <p className="eyebrow">Publication · ICAAIC 2025</p>
+            <h3>AI-Driven Synthetic Data for Better Lung Cancer Prediction with TabDDPM and CTGAN</h3>
+            <p>Presented at ICAAIC 2025.</p>
+          </article>
+          <article className="credential-card">
+            <Users aria-hidden="true" size={23} />
+            <p className="eyebrow">Leadership</p>
+            <h3>Contributing beyond the classroom</h3>
+            <ul className="leadership-list">
+              <li>
+                <span>Research Team, ARC Society</span>
+                <span>2023–2026</span>
+              </li>
+              <li>
+                <span>PR Team, Rotaract Club</span>
+                <span>2024–2025</span>
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <section id="contact" tabIndex={-1} className="section shell">
+        <div className="contact-panel">
+          <p className="eyebrow">06 / Contact</p>
+          <h2>Let’s build something useful.</h2>
+          <p>Open to Software Engineer roles in Python, backend, and full-stack development at product-focused companies.</p>
+          <a className="email-link" href={`mailto:${PROFILE.email}`}>
+            <Mail aria-hidden="true" size={21} />
+            <span>
+              {PROFILE.email}
+            </span>
+            <ArrowUpRight aria-hidden="true" size={20} />
+          </a>
+          <div className="contact-socials">
+            <ExternalLink href={PROFILE.linkedin}><Linkedin aria-hidden="true" size={18} /> LinkedIn <ArrowUpRight aria-hidden="true" size={15} /></ExternalLink>
+            <ExternalLink href={PROFILE.github}><Github aria-hidden="true" size={18} /> GitHub <ArrowUpRight aria-hidden="true" size={15} /></ExternalLink>
           </div>
-
-          {open && (
-            <div className="grid md:grid-cols-2 gap-6 mt-6">
-              {OTHER_PROJECTS.map((p, i) => (
-                <motion.div
-                  key={i}
-                  whileHover={{ scale: 1.02 }}
-                  className="p-5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400 transition"
-                >
-                  <div className="mb-3 rounded-lg overflow-hidden border border-white/10">
-                    <img
-                      src={p.img}
-                      className="w-full h-40 object-cover"
-                      alt=""
-                    />
-                  </div>
-
-                  <h4 className="text-xl mb-1">{p.title}</h4>
-                  <p className="opacity-70 text-sm mb-2">{p.desc}</p>
-
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {p.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="px-2 py-1 text-xs bg-white/10 rounded-lg"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="space-x-3 text-sm">
-                    <a href={p.github} className="text-blue-400 hover:underline">
-                      GitHub
-                    </a>
-                    {p.live && (
-                      <a href={p.live} className="text-green-400 hover:underline">
-                        Live
-                      </a>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </section>
-      </Fade>
-
-      {/* CONTACT WITH EMAILJS */}
-    <Fade>
-    <section id="contact" className="max-w-4xl mx-auto p-6">
-      <h2 className="text-3xl mb-4 font-semibold border-b border-white/10 pb-2">Contact</h2>
-
-      <form onSubmit={send} className="space-y-4 p-6 rounded-2xl bg-white/5 border border-white/10">
-        <input name="name" placeholder="Name" required className="w-full p-2 bg-white/5 border border-white/10 rounded"/>
-        <input name="email" placeholder="Email" required className="w-full p-2 bg-white/5 border border-white/10 rounded"/>
-        <textarea name="message" placeholder="Message" required className="w-full p-2 bg-white/5 border border-white/10 rounded"/>
-
-        <button disabled={sending}className="px-5 py-2 bg-purple-600 rounded-xl flex items-center gap-2">
-          {sending?'sending...':'Send'} <ExternalLink size={16}/>
-        </button>
-      </form>
-    </section>
-    </Fade>
-
-    {/* BACK TO TOP */}
-    <button onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}
-      className="fixed bottom-6 left-6 p-3 rounded-full bg-purple-600 shadow-lg">
-      <ArrowUp/>
-    </button>
-    </div>
-  );
+        </div>
+      </section>
+    </main>
+    <footer className="shell footer">
+      <p>© {new Date().getFullYear()} Ritika Srivastava</p>
+      <SocialLinks />
+    </footer>
+  </>;
 }

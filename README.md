@@ -1,94 +1,38 @@
-# 🌟 Ritika Srivastava – Portfolio Website
+﻿# Ritika Srivastava | Software Engineer
 
-A modern, responsive and interactive portfolio built with **React, Vite, Tailwind CSS, Framer Motion and EmailJS** showcasing my projects and skills.
+A responsive, dark portfolio focused on Python, backend, and full-stack development.
 
----
+[Live portfolio](https://portfolio-flame-ten-r3u0s99zxp.vercel.app/) · [GitHub](https://github.com/ritika-315/)
 
-## 🚀 Live Demo
+## Stack and sections
 
-👉 **Live Website:** [portfolio-flame-ten-r3u0s99zxp.vercel.app](https://portfolio-flame-ten-r3u0s99zxp.vercel.app/)
+React, Vite, Tailwind CSS, Framer Motion, and Lucide React. The static build is compatible with Vercel.
 
-👉 **GitHub:** [https://github.com/ritika-315](https://github.com/ritika-315)
+The page includes navigation, a hero, About, Technical Skills, Featured Projects, Experience, Publication and Leadership, Contact, and a footer. It supports keyboard navigation, a mobile menu, and reduced-motion preferences. Contact uses direct email, LinkedIn, and GitHub links; no environment variables are required.
 
----
+## Local development
 
-## ✨ Features
-
-* 🎨 Modern UI with Glassmorphism & Gradients
-* 🌙 Dark / Light Theme (Persistent)
-* 📩 Contact Form using EmailJS
-* 📊 Scroll Progress Bar
-* ⬆️ Back to Top Button
-* ⚡ Smooth Animations with Framer Motion
-* 📱 Fully Responsive Design
-* 🔔 Toast Notifications
-* 🧩 Skill Icons using Lucide React
-
----
-
-## 🛠 Tech Stack
-
-* **Frontend:** React + Vite
-* **Styling:** Tailwind CSS
-* **Animations:** Framer Motion
-* **Icons:** Lucide React
-* **Email Service:** EmailJS
-* **Deployment:** Vercel
-
----
-
-## ⚙️ Installation
-
-Clone the repository:
+Use Node.js 22.12+ and npm.
 
 ```bash
-git clone[ YOUR_REPO_LINK](https://github.com/ritika-315/Portfolio)
-cd ritika-portfolio
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run locally:
-
-```bash
+git clone https://github.com/ritika-315/Portfolio.git
+cd Portfolio
+npm ci
 npm run dev
 ```
 
-Open → [http://localhost:5173](http://localhost:5173)
-
----
-
-## 📦 Build
+Open the local URL printed by Vite (usually `http://localhost:5173`).
 
 ```bash
+npm run lint
 npm run build
+npm run preview
 ```
 
-Output folder → **dist/**
+The production build is written to `dist/`. `npm run preview` serves that build locally.
 
----
+## Content and assets
 
-## 📩 EmailJS Setup
+Portfolio content and repository links are in `src/App.jsx`; styles are in `src/index.css`. Project screenshots and the current résumé are in `public/`. The résumé link must remain `/Ritika_Srivastava_Resume.pdf`.
 
-1. Create account on [https://emailjs.com](https://emailjs.com)
-2. Create Service & Template
-3. Add keys in code:
-
-```js
-service: "YOUR_SERVICE_ID",
-template: "YOUR_TEMPLATE_ID",
-public: "YOUR_PUBLIC_KEY"
-```
-
----
-
-## 🌐 Deployment (Vercel)
-
-1. Push code to GitHub
-2. Import project on Vercel
-3. Build command: `npm run build`
-4. Output directory: `dist`
+Project demo buttons remain hidden until public functionality is verified. The live portfolio reflects the last deployment, not uncommitted local changes.
